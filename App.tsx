@@ -1,20 +1,27 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { StatusBar, Text } from "react-native";
+import { getContent } from "./src/services/getContent";
+import { useEffect, useState } from "react";
+import Maps from "./src/modules/home/Maps";
 
 export default function App() {
+  const [content, setContent] = useState();
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleGetData = async () => {
+    setIsLoading(true);
+    const data = await getContent();
+    setContent(data);
+    setIsLoading(false);
+  };
+
+  useEffect(() => {
+    handleGetData();
+  }, []);
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <>
+      <StatusBar barStyle={"light-content"} />
+      {isLoading ? <Text>Loading</Text> : <Maps content={content} />}
+    </>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
